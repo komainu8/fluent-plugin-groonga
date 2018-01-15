@@ -246,6 +246,25 @@ EOC
                        actual_input,
                      ])
       end
+      def test_basic_command_with_record
+        driver = create_driver
+        time = event_time("2012-10-26T08:45:42Z")
+        driver.run(default_tag: "groonga.command") do
+          driver.feed(time, {"name" => "table_create", "arguments" => {"name" => "Users"}})
+        end
+        assert_equal([
+                       [
+                         "--input-fd", actual_input_fd,
+                         "--output-fd", actual_output_fd,
+                         "-n", @database_path,
+                       ],
+                       "/d/table_create?name=Users\n",
+                     ],
+                     [
+                       actual_command_line,
+                       actual_input,
+                     ])
+      end
     end
   end
 end
